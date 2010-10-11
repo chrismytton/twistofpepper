@@ -1,0 +1,26 @@
+!!! 5
+html(lang='en', class='no-js')
+  head
+  	meta(charset='utf-8')
+  	//[if IE]
+  	//[endif]
+    title= title
+    meta(name='description', content='')
+    meta(name='author', content='')
+    meta(name='viewport', content='width=device-width; initial-scale=1.0; maximum-scale=1.0;')
+    link(rel='shortcut icon', href='/favicon.ico')
+    link(rel='apple-shortcut-icon', href='/apple-touch-icon.png')
+    link(rel='stylesheet', href='/stylesheets/main.css')
+    link(rel='stylesheet', media='handheld', href='/stylesheets/handheld.css')
+    script(src='/javascripts/modernizr-1.5.min.js')
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js')
+    :javascript
+    	| !window.jQuery && document.write('<script src="/javascripts/jquery-1.4.2.min.js"><\\/script>')
+    script(src='/javascripts/sammy.js')
+    script(src='/javascripts/plugins.js')
+    script(src='/javascripts/script.js')
+  body
+  	#container
+  		header
+  		#main!= body
+  		footer
