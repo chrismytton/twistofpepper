@@ -2,22 +2,34 @@
 
 */
 (function($){
-	var twistop = $.sammy(function(){
+	var socket = new io.Socket();
+	socket.connect();
+
+	socket.on('connect', function(){
+		// Client has connected to the server
+		console.log('Connected to remote');
+		socket.send('Hello!');
+	});
+
+	socket.on('message', function(data){
+		// New message received
+		console.log(data);
+	});
+
+	socket.on('disconnect', function(arg){
+		// Disconnected from the server
+		console.log(arg);
+	});
+
+	var app = $.sammy(function(){
 		this.element_selector = '#main';
+
 		this.get('#/', function(){
-			$.ajax({
-				url: '/tweets',
-				dataType: 'json',
-				success: function(tweets){
-					$.each(tweets, function(i, tweet){
-						console.log(tweet.text);
-					});
-				}
-			});
+			
 		});
 	});
 
 	$(function($){
-		twistop.run('#/');
+		app.run('#/');
 	});
 })(window.jQuery);

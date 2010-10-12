@@ -4,7 +4,8 @@
  */
 
 var express = require('express'),
-		http = require('http');
+		http = require('http'),
+		io = require('socket.io');
 
 var app = module.exports = express.createServer();
 
@@ -32,30 +33,43 @@ app.configure('production', function(){
 app.get('/', function(req, res){
     res.render('index.jade', {
         locals: {
-            title: 'Express'
+            title: 'Twist Of Pepper'
         }
     });
 });
 
-app.get('/tweets', function(req, res){
-	res.writeHead(200, {'Content-Type': 'application/json'});
-	res.end('[{"text": "Hello world", "screen_name": "hecticjeff"}]'); 
+// app.get('/tweets', function(req, res){
+//  res.writeHead(200, {'Content-Type': 'application/json'});
+//  res.end('[{"text": "Hello world", "screen_name": "hecticjeff"}]'); 
+// 
+//  var twitter = http.createClient(80, 'api.twitter.com');
+//  var request = twitter.request('GET', '/1/users/show?screen_name=hecticjeff', {'host': 'api.twitter.com'});
+//  request.end();
+//  request.on('response', function(response){
+//      console.log('STATUS: ' + response.statusCode);
+//      console.log('HEADERS: ' + JSON.stringify(response.headers));
+//      response.setEncoding('utf8');
+//      response.on('data', function(chunk){
+//          console.log('BODY: ' + chunk);
+//      });
+//  });
+// });
 
-	var twitter = http.createClient(80, 'api.twitter.com');
-	var request = twitter.request('GET', '/1/users/show?screen_name=hecticjeff', {'host': 'api.twitter.com'});
-	request.end();
-	request.on('response', function(response){
-		console.log('STATUS: ' + response.statusCode);
-		console.log('HEADERS: ' + JSON.stringify(response.headers));
-		response.setEncoding('utf8');
-		response.on('data', function(chunk){
-			console.log('BODY: ' + chunk);
-		});
-	});
-});
 // Only listen on $ node app.js
-
 if (!module.parent) {
+    var socket = io.listen(app);
+    socket.on('connection', function(client){
+        // New client is here!
+        // Send out a new message every time there is a new tweet available.
+        client.on('message', function(msg){
+            // Client has sent a message
+            console.log(msg);
+            client.send(msg);
+        });
+
+        client.on('disconnect', function(){
+            // Bye bye
+        });
+    });
     app.listen(3000);
-    console.log("Express server listening on port %d", app.address().port)
 }
