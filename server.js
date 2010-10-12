@@ -98,7 +98,7 @@ if (!module.parent) {
 		});
 
 		client.on('disconnect', function(){
-				// Bye bye
+			// Bye bye
 		});
 	});
 
