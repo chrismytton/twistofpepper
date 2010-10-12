@@ -26,6 +26,7 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
+   app.set('port', 80);
    app.use(express.errorHandler()); 
 });
 
@@ -101,5 +102,5 @@ if (!module.parent) {
 		});
 	});
 
-	app.listen(3000);
+	app.listen(app.set('port') || 3000);
 }
