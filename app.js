@@ -4,8 +4,9 @@
  */
 
 var express = require('express'),
-		http = require('http'),
-		io = require('socket.io');
+		io = require('socket.io'),
+		TwitterNode = require('twitter-node').TwitterNode,
+		sys = require('sys');
 
 var app = module.exports = express.createServer();
 
@@ -38,38 +39,67 @@ app.get('/', function(req, res){
     });
 });
 
-// app.get('/tweets', function(req, res){
-//  res.writeHead(200, {'Content-Type': 'application/json'});
-//  res.end('[{"text": "Hello world", "screen_name": "hecticjeff"}]'); 
-// 
-//  var twitter = http.createClient(80, 'api.twitter.com');
-//  var request = twitter.request('GET', '/1/users/show?screen_name=hecticjeff', {'host': 'api.twitter.com'});
-//  request.end();
-//  request.on('response', function(response){
-//      console.log('STATUS: ' + response.statusCode);
-//      console.log('HEADERS: ' + JSON.stringify(response.headers));
-//      response.setEncoding('utf8');
-//      response.on('data', function(chunk){
-//          console.log('BODY: ' + chunk);
-//      });
-//  });
-// });
+app.get('/:template.hb', function(req, res){
+	res.writeHead(200, {'Content-Type': 'text/handlebars'});
+	var fs = require('fs');
+	fs.readFile('./views/' + req.params.template + '.hb', function(err, data){
+		if (err) throw err;
+		res.end(data);
+	});
+});
 
-// Only listen on $ node app.js
+// only listen on $ node app.js
 if (!module.parent) {
-    var socket = io.listen(app);
-    socket.on('connection', function(client){
-        // New client is here!
-        // Send out a new message every time there is a new tweet available.
-        client.on('message', function(msg){
-            // Client has sent a message
-            console.log(msg);
-            client.send(msg);
-        });
 
-        client.on('disconnect', function(){
-            // Bye bye
-        });
-    });
-    app.listen(3000);
+	var buffer = [],
+			json = JSON.stringify,
+			socket = io.listen(app),
+			twit = new TwitterNode({
+				user: process.env['TWITTER_U'],
+				password: process.env['TWITTER_P'],
+				track: ['ruby', 'nodejs', 'javascript', 'rails', 'coffeescript']
+			});
+
+	twit.addListener('error', function(error) {
+		console.log(error.message);
+	});
+
+	twit.addListener('tweet', function(tweet) {
+		sys.puts("@" + tweet.user.screen_name + ": " + tweet.text);
+		buffer.unshift(tweet);
+		if (buffer.length > 15) { buffer.pop(); }
+		socket.broadcast(json({tweet: tweet}));
+	})
+
+	.addListener('limit', function(limit) {
+		sys.puts("LIMIT: " + sys.inspect(limit));
+	})
+
+	.addListener('delete', function(del) {
+		sys.puts("DELETE: " + sys.inspect(del));
+	})
+
+	.addListener('end', function(resp) {
+		sys.puts("wave goodbye... " + resp.statusCode);
+	})
+
+	.stream();
+
+
+	socket.on('connection', function(client){
+			// new client is here!
+			// send out a new message every time there is a new tweet available.
+		client.send(json({buffer: buffer}));
+
+		client.on('message', function(msg){
+			// Client has sent a message
+			console.log(msg);
+		});
+
+		client.on('disconnect', function(){
+				// Bye bye
+		});
+	});
+
+	app.listen(3000);
 }

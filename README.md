@@ -39,3 +39,7 @@ This will make a link to the code and put it in the npm path, so you can load up
 experiment with it, any changes will be available to other app immediatly.
 
 even neater
+
+### Structure
+
+The application is split into 
