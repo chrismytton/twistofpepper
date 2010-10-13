@@ -35,6 +35,12 @@ Then install and get dependencies with npm
 
 		npm link .
 
+You need to set up twitter credentials for this to work
+
+		export TWITTER_U=mytwittername
+		export TWITTER_P=secret
+
+
 This will make a link to the code and put it in the npm path, so you can load up the code and
 experiment with it, any changes will be available to other app immediatly.
 
