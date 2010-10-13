@@ -1,5 +1,12 @@
 /* Author: Chris Mytton @hecticjeff
 
+	 Twist of Pepper
+
+	 what are people twEATing?
+
+	 An experiment with WebSockets, sammy.js and node.js
+
+	 This file defines the sammy app and the websocket interactions.
 */
 (function($){
 	var socket = new io.Socket();
