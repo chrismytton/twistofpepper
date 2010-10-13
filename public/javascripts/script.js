@@ -36,7 +36,6 @@
 
 		this.bind('tweet', function(e, tweet) {
 			console.log(tweet);
-			tweet = tweet;
 			var context = this;
 			this.render('tweet.hb', tweet, function(html){
 				context.$element().prepend(html);
