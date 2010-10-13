@@ -58,6 +58,13 @@
 				this.partial('index.hb');
 			});
 		})
+
+		this.get('#/search', function(context){
+			// Show the user a search dialog
+		});
+		this.get('#/search/:q', function(context){
+			// Query the server and return the result to the user
+		});
 	});
 
 	$(function($){
