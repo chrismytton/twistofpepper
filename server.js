@@ -49,58 +49,54 @@ app.get('/:template.hb', function(req, res){
 	});
 });
 
-// only listen on $ node app.js
-if (!module.parent) {
-
-	var buffer = [],
-			json = JSON.stringify,
-			socket = io.listen(app),
-			twit = new TwitterNode({
-				user: process.env['TWITTER_U'],
-				password: process.env['TWITTER_P'],
-				track: ['ruby', 'nodejs', 'javascript', 'rails', 'coffeescript']
-			});
-
-	twit.addListener('error', function(error) {
-		console.log(error.message);
-	});
-
-	twit.addListener('tweet', function(tweet) {
-		sys.puts("@" + tweet.user.screen_name + ": " + tweet.text);
-		buffer.unshift(tweet);
-		if (buffer.length > 15) { buffer.pop(); }
-		socket.broadcast(json({tweet: tweet}));
-	})
-
-	.addListener('limit', function(limit) {
-		sys.puts("LIMIT: " + sys.inspect(limit));
-	})
-
-	.addListener('delete', function(del) {
-		sys.puts("DELETE: " + sys.inspect(del));
-	})
-
-	.addListener('end', function(resp) {
-		sys.puts("wave goodbye... " + resp.statusCode);
-	})
-
-	.stream();
-
-
-	socket.on('connection', function(client){
-			// new client is here!
-			// send out a new message every time there is a new tweet available.
-		client.send(json({buffer: buffer}));
-
-		client.on('message', function(msg){
-			// Client has sent a message
-			console.log(msg);
+var buffer = [],
+		json = JSON.stringify,
+		socket = io.listen(app),
+		twit = new TwitterNode({
+			user: process.env['TWITTER_U'],
+			password: process.env['TWITTER_P'],
+			track: ['ruby', 'nodejs', 'javascript', 'rails', 'coffeescript']
 		});
 
-		client.on('disconnect', function(){
-			// Bye bye
-		});
+twit.addListener('error', function(error) {
+	console.log(error.message);
+});
+
+twit.addListener('tweet', function(tweet) {
+	sys.puts("@" + tweet.user.screen_name + ": " + tweet.text);
+	buffer.unshift(tweet);
+	if (buffer.length > 15) { buffer.pop(); }
+	socket.broadcast(json({tweet: tweet}));
+})
+
+.addListener('limit', function(limit) {
+	sys.puts("LIMIT: " + sys.inspect(limit));
+})
+
+.addListener('delete', function(del) {
+	sys.puts("DELETE: " + sys.inspect(del));
+})
+
+.addListener('end', function(resp) {
+	sys.puts("wave goodbye... " + resp.statusCode);
+})
+
+.stream();
+
+
+socket.on('connection', function(client){
+		// new client is here!
+		// send out a new message every time there is a new tweet available.
+	client.send(json({buffer: buffer}));
+
+	client.on('message', function(msg){
+		// Client has sent a message
+		console.log(msg);
 	});
 
-	app.listen(app.set('port') || 3000);
-}
+	client.on('disconnect', function(){
+		// Bye bye
+	});
+});
+
+app.listen(app.set('port') || 3000);
