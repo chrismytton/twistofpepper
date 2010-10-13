@@ -16,7 +16,7 @@
 		this.use('JSON');
 		this.element_selector = '#main';
 
-		this.bind('run', function(e) {
+		function setupSockets(){
 			var context = this;
 			socket.connect();
 
@@ -38,7 +38,9 @@
 					return app.trigger('tweet', msg.tweet);
 				}
 			});
-		});
+		};
+
+		this.bind('run', setupSockets);
 
 
 		this.bind('tweet', function(e, tweet) {
