@@ -51,13 +51,16 @@
 			});
 		});
 
-		$.get('tweet.hb', function(response){
-			app.bind('buffer', function(e, tweets){
-				this.partials = {tweet: response};
-				this.tweets = tweets;
-				this.partial('index.hb');
-			});
-		})
+
+		app.bind('buffer', function(e, tweets){
+		  var context = this;
+		  this.load('tweet.hb', null, function(content){
+		    context.partials = {tweet: content};
+  			context.tweets = tweets;
+  			context.partial('index.hb');
+		  });
+		});
+
 
 		this.get('#/search', function(context){
 			// Show the user a search dialog
