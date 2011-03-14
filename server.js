@@ -53,8 +53,8 @@ var buffer = [],
 		json = JSON.stringify,
 		socket = io.listen(app),
 		twit = new TwitterNode({
-			user: process.env['TWITTER_U'],
-			password: process.env['TWITTER_P'],
+			user: process.env.TWITTER_U,
+			password: process.env.TWITTER_P,
 			track: ['ruby', 'nodejs', 'javascript', 'rails', 'coffeescript']
 		});
 
