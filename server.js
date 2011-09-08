@@ -4,7 +4,6 @@
  */
 
 var express = require('express'),
-    io = require('socket.io'),
     TwitterNode = require('twitter-node').TwitterNode,
     sys = require('sys');
 
@@ -51,7 +50,7 @@ app.get('/:template.hb', function(req, res){
 
 var buffer = [],
     json = JSON.stringify,
-    socket = io.listen(app),
+    io = require('socket.io').listen(app),
     twit = new TwitterNode({
       user: process.env.TWITTER_U,
       password: process.env.TWITTER_P,
@@ -66,7 +65,6 @@ twit.addListener('tweet', function(tweet) {
   sys.puts("@" + tweet.user.screen_name + ": " + tweet.text);
   buffer.unshift(tweet);
   if (buffer.length > 15) { buffer.pop(); }
-  socket.broadcast(json({tweet: tweet}));
 })
 
 .addListener('limit', function(limit) {
@@ -84,19 +82,10 @@ twit.addListener('tweet', function(tweet) {
 .stream();
 
 
-socket.on('connection', function(client){
-    // new client is here!
+io.sockets.on('connection', function(socket){
+    // new socket is here!
     // send out a new message every time there is a new tweet available.
-  client.send(json({buffer: buffer}));
-
-  client.on('message', function(msg){
-    // Client has sent a message
-    console.log(msg);
-  });
-
-  client.on('disconnect', function(){
-    // Bye bye
-  });
+  socket.emit('tweet', json({buffer: buffer}));
 });
 
 app.listen(app.set('port') || 3000);
