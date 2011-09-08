@@ -47,13 +47,14 @@ app.get('/:template.hb', function(req, res){
   });
 });
 
+
+
 var buffer = [],
-json = JSON.stringify,
 io = require('socket.io').listen(app),
 twit = new TwitterNode({
   user: process.env.TWITTER_U,
   password: process.env.TWITTER_P,
-  track: ['ruby', 'nodejs', 'javascript', 'rails', 'coffeescript']
+  track: []
 });
 
 twit.addListener('error', function(error) {
@@ -77,14 +78,27 @@ twit.addListener('tweet', function(tweet) {
 
 .addListener('end', function(resp) {
   console.log("wave goodbye... " + resp.statusCode);
-})
+});
 
-.stream();
+// Read what the user wants to track from stdin
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
 
+process.stdin.on('data', function (chunk) {
+  chunk.split('\n').forEach(function(thing) {
+    if (thing !== '') {
+      twit.track(thing);
+      console.log("Tracking '%s'", thing);
+    }
+  });
+});
+
+process.stdin.on('end', function () {
+  twit.stream();
+});
 
 io.sockets.on('connection', function(socket){
   // new socket is here!
-  // send out a new message every time there is a new tweet available.
   socket.emit('buffer', buffer);
 });
 
