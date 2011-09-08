@@ -14,6 +14,7 @@
     "socket.io": "",
     "twitter-node": "",
     "jade": "",
+    "less": "",
     "coffee-script": ""
   },
   "scripts": {
