@@ -9,39 +9,20 @@
    This file defines the sammy app and the websocket interactions.
 */
 (function($){
-  var socket = new io.Socket();
-
   var app = $.sammy(function(app){
     this.use('Handlebars', 'hb');
     this.use('JSON');
     this.element_selector = '#main';
 
-    function setupSockets(){
-      var context = this;
-      socket.connect('http://localhost');
+    var socket = io.connect();
 
-      socket.on('connect', function(){
-        // Client has connected to the server
-      });
+    socket.on('buffer', function(buffer) {
+      app.trigger('buffer', buffer);
+    });
 
-      socket.on('disconnect', function(arg){
-        // Disconnected from the server
-      });
-
-      socket.on('message', function(msg){
-        msg = context.json(msg);
-        // New message received
-        if ('buffer' in msg) {
-          return app.trigger('buffer', msg.buffer);
-        }
-        if ('tweet' in msg) {
-          return app.trigger('tweet', msg.tweet);
-        }
-      });
-    };
-
-    this.bind('run', setupSockets);
-
+    socket.on('tweet', function(tweet) {
+      app.trigger('tweet', tweet);
+    });
 
     this.bind('tweet', function(e, tweet) {
       console.log(tweet);

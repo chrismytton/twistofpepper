@@ -64,6 +64,7 @@ twit.addListener('tweet', function(tweet) {
   console.log("@" + tweet.user.screen_name + ": " + tweet.text);
   buffer.unshift(tweet);
   if (buffer.length > 15) { buffer.pop(); }
+  io.sockets.emit('tweet', tweet);
 })
 
 .addListener('limit', function(limit) {
@@ -84,7 +85,7 @@ twit.addListener('tweet', function(tweet) {
 io.sockets.on('connection', function(socket){
   // new socket is here!
   // send out a new message every time there is a new tweet available.
-  socket.emit('tweet', json({buffer: buffer}));
+  socket.emit('buffer', buffer);
 });
 
 app.listen(app.set('port') || 3000);
