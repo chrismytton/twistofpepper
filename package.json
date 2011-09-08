@@ -1,0 +1,19 @@
+{
+  "author": "",
+  "name": "twistofpepper",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hecticjeff/twistofpepper.git"
+  },
+  "engines": {
+    "node": "0.4"
+  },
+  "dependencies": {
+    "express": "",
+    "socket.io": "",
+    "twitter-node": "",
+    "jade": ""
+  },
+  "devDependencies": {}
+}
