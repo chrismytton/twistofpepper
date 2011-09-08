@@ -1,9 +1,9 @@
 !!! 5
 html(lang='en', class='no-js')
   head
-  	meta(charset='utf-8')
-  	//[if IE]
-  	//[endif]
+    meta(charset='utf-8')
+    //[if IE]
+    //[endif]
     title= title
     meta(name='description', content='')
     meta(name='author', content='')
@@ -15,7 +15,7 @@ html(lang='en', class='no-js')
     script(src='/javascripts/modernizr-1.5.min.js')
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js')
     :javascript
-    	| !window.jQuery && document.write('<script src="/javascripts/jquery-1.4.2.min.js"><\\/script>')
+      | !window.jQuery && document.write('<script src="/javascripts/jquery-1.4.2.min.js"><\\/script>')
     script(src='/javascripts/socket.io.js')
     script(src='/javascripts/sammy.js')
     script(src='/javascripts/plugins/sammy.handlebars.js')
@@ -23,7 +23,7 @@ html(lang='en', class='no-js')
     script(src='/javascripts/plugins.js')
     script(src='/javascripts/script.js')
   body
-  	#container
-  		header
-  		#main!= body
-  		footer
+    #container
+      header
+      #main!= body
+      footer
