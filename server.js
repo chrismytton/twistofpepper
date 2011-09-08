@@ -1,42 +1,42 @@
 
 /**
  * Module dependencies.
- */
+*/
 
 var express = require('express'),
-    TwitterNode = require('twitter-node').TwitterNode,
-    sys = require('sys');
+TwitterNode = require('twitter-node').TwitterNode,
+sys = require('sys');
 
 var app = module.exports = express.createServer();
 
 // Configuration
 
 app.configure(function(){
-    app.set('views', __dirname + '/views');
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
-    app.use(app.router);
-    app.use(express.static(__dirname + '/public'));
+  app.set('views', __dirname + '/views');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
+  app.use(app.router);
+  app.use(express.static(__dirname + '/public'));
 });
 
 app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
-   app.set('port', 80);
-   app.use(express.errorHandler());
+  app.set('port', 80);
+  app.use(express.errorHandler());
 });
 
 // Routes
 
 app.get('/', function(req, res){
-    res.render('index.jade', {
-        locals: {
-            title: 'Twist Of Pepper'
-        }
-    });
+  res.render('index.jade', {
+    locals: {
+      title: 'Twist Of Pepper'
+    }
+  });
 });
 
 app.get('/:template.hb', function(req, res){
@@ -49,13 +49,13 @@ app.get('/:template.hb', function(req, res){
 });
 
 var buffer = [],
-    json = JSON.stringify,
-    io = require('socket.io').listen(app),
-    twit = new TwitterNode({
-      user: process.env.TWITTER_U,
-      password: process.env.TWITTER_P,
-      track: ['ruby', 'nodejs', 'javascript', 'rails', 'coffeescript']
-    });
+json = JSON.stringify,
+io = require('socket.io').listen(app),
+twit = new TwitterNode({
+  user: process.env.TWITTER_U,
+  password: process.env.TWITTER_P,
+  track: ['ruby', 'nodejs', 'javascript', 'rails', 'coffeescript']
+});
 
 twit.addListener('error', function(error) {
   console.log(error.message);
@@ -83,8 +83,8 @@ twit.addListener('tweet', function(tweet) {
 
 
 io.sockets.on('connection', function(socket){
-    // new socket is here!
-    // send out a new message every time there is a new tweet available.
+  // new socket is here!
+  // send out a new message every time there is a new tweet available.
   socket.emit('tweet', json({buffer: buffer}));
 });
 
