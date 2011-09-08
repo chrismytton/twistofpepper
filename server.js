@@ -23,7 +23,6 @@
     }));
   });
   app.configure('production', function() {
-    app.set('port', 80);
     return app.use(express.errorHandler());
   });
   app.get('/', function(req, res) {
@@ -80,5 +79,5 @@
   io.sockets.on('connection', function(socket) {
     return socket.emit('buffer', buffer);
   });
-  app.listen(app.set('port') || 3000);
+  app.listen(process.env.PORT || 3000);
 }).call(this);

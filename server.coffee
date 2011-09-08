@@ -18,7 +18,6 @@ app.configure 'development', ->
   app.use express.errorHandler(dumpExceptions: true, showStack: true)
 
 app.configure 'production', ->
-  app.set 'port', 80
   app.use express.errorHandler()
 
 # Routes
@@ -69,4 +68,4 @@ io.sockets.on 'connection', (socket) ->
   # new socket is here!
   socket.emit 'buffer', buffer
 
-app.listen app.set('port') || 3000
+app.listen process.env.PORT || 3000
