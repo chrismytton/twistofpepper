@@ -13,7 +13,11 @@
     "express": "",
     "socket.io": "",
     "twitter-node": "",
-    "jade": ""
+    "jade": "",
+    "coffee-script": ""
+  },
+  "scripts": {
+    "start": "coffee server.coffee"
   },
   "devDependencies": {}
 }
