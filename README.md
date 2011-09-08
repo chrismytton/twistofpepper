@@ -1,15 +1,45 @@
-twistofpepper - Gourmet Twitter
-=================================
+twistofpepper
+=============
 
-## Introduction
+Realtime twitter streams using node, socket.io and sammy.js.
 
-I've had the domain name for this project for a while now, I purchased it with another
-project in mind, times change, my plans change, and now I have repurposed the domain name
-for a new experiment.
+## Install
 
-## Description
+First you need to grab the git repo and install the dependencies using
+[npm](http://npmjs.org/).
 
-The server initially serves up a static html page, the application is all 
-written in javascript, on the client side, sammy is used for the client side logic,
-node is used on the server, after loading the page, the communication happens over websockets,
-thanks to socket.io.
+```shell
+$ git clone https://github.com/hecticjeff/twistofpepper
+...
+$ cd twistofpepper
+$ npm install
+...
+```
+
+## Usage
+
+The app reads a list of terms on stdin and watches the Twitter streaming
+API for any mention of them.
+
+Create a file and place one term on each line, in the example below,
+I've called it `things.txt`.
+
+```shell
+$ cat things.txt
+node.js
+coffeescript
+socket.io
+$ npm start < things.txt
+
+> twistofpepper@0.0.0 start /Users/chris/github/hecticjeff/twistofpepper
+> node server.js
+
+   info  - socket.io started
+Tracking 'node.js'
+Tracking 'coffeescript'
+Tracking 'socket.io'
+@Goyapa: node.js http://t.co/17CnxTw
+...
+```
+
+Copyright (c) 2011, Chris Mytton
