@@ -1,15 +1,9 @@
-
-/**
- * Module dependencies.
-*/
-
-var express = require('express'),
-TwitterNode = require('twitter-node').TwitterNode;
-
+var express = require('express');
+var TwitterNode = require('twitter-node').TwitterNode;
 var app = module.exports = express.createServer();
+var io = require('socket.io').listen(app);
 
 // Configuration
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.use(express.bodyParser());
@@ -29,7 +23,6 @@ app.configure('production', function(){
 });
 
 // Routes
-
 app.get('/', function(req, res){
   res.render('index.jade', {
     locals: {
@@ -47,11 +40,9 @@ app.get('/:template.hb', function(req, res){
   });
 });
 
+var buffer = [];
 
-
-var buffer = [],
-io = require('socket.io').listen(app),
-twit = new TwitterNode({
+var twit = new TwitterNode({
   user: process.env.TWITTER_U,
   password: process.env.TWITTER_P,
   track: []
