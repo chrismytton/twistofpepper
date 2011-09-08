@@ -4,8 +4,7 @@
 */
 
 var express = require('express'),
-TwitterNode = require('twitter-node').TwitterNode,
-sys = require('sys');
+TwitterNode = require('twitter-node').TwitterNode;
 
 var app = module.exports = express.createServer();
 
@@ -62,21 +61,21 @@ twit.addListener('error', function(error) {
 });
 
 twit.addListener('tweet', function(tweet) {
-  sys.puts("@" + tweet.user.screen_name + ": " + tweet.text);
+  console.log("@" + tweet.user.screen_name + ": " + tweet.text);
   buffer.unshift(tweet);
   if (buffer.length > 15) { buffer.pop(); }
 })
 
 .addListener('limit', function(limit) {
-  sys.puts("LIMIT: " + sys.inspect(limit));
+  console.log("LIMIT: " + sys.inspect(limit));
 })
 
 .addListener('delete', function(del) {
-  sys.puts("DELETE: " + sys.inspect(del));
+  console.log("DELETE: " + sys.inspect(del));
 })
 
 .addListener('end', function(resp) {
-  sys.puts("wave goodbye... " + resp.statusCode);
+  console.log("wave goodbye... " + resp.statusCode);
 })
 
 .stream();
